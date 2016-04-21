@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="setup">
+	<!-- 게시판 검색조건 -->
+	
+	<sql id="setupAdminSelect">
+		${BOARDTBL} MEMBERS, TBL_MEMBERS_ROLE ROLE WHERE ROLE.USERROLE = 'ROLE_ADMIN' AND MEMBERS.USERID = ROLE.USERID
+	</sql>
+	
+	<sql id="setupWhere">
+		<if test='KEYWORD != null and KEYWORD != "" and KEYSTRING != null and KEYSTRING != ""'>
+			AND MEMBERS.${KEYWORD} LIKE '%${KEYSTRING}%'  
+		</if>
+		<if test='beforeDate != null and afterDate != null and beforeDate != "" and afterDate != ""'>
+			<![CDATA[
+				AND MEMBERS.USERREGDATE >= DATE(#{beforeDate}) AND MEMBERS.USERREGDATE <= DATE(#{afterDate})
+			]]>
+		</if>
+	</sql>
+	
+	<sql id="productWhere">
+		<if test='KEYWORD != null and KEYWORD != "" and KEYSTRING != null and KEYSTRING != ""'>
+			WHERE ${KEYWORD} LIKE '%${KEYSTRING}%'  
+		</if>
+		<if test='beforeDate != null and afterDate != null and beforeDate != "" and afterDate != ""'>
+			<![CDATA[
+				AND REGDATE >= DATE(#{beforeDate}) AND REGDATE <= DATE(#{afterDate})
+			]]>
+		</if>
+	</sql>
+	
+	<!-- 회원 관리자 전체목록수 가져오는 부분 -->
+	<select id="getAdminTotalList" parameterType="hashMap" resultType="Integer">
+		<!-- SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} -->
+		SELECT COUNT(*) AS TOTAL_COUNT FROM <include refid="setupAdminSelect" /> 
+		<include refid="setupWhere" />
+	</select>
+	
+	 <select id="getAdminList" resultType="hashmap">
+ 		SELECT MEMBERS.USERID, MEMBERS.USERNAME, MEMBERS.USERTEL, MEMBERS.USEREMAIL, MR.USERROLE, MEMBERS.USERREGDATE, @ROWNUM:=@ROWNUM+1 COUNT 
+ 		FROM (SELECT @ROWNUM:=${START})R,TBL_MEMBERS_ROLE MR , <include refid="setupAdminSelect" /> 
+ 		<include refid="setupWhere" /> AND MR.USERID = MEMBERS.USERID
+ 		LIMIT #{START},#{END};
+ 	</select>
+	
+	<!-- setup admin 등록  -->
+ 	<insert id="setSetupAdminInsert"  parameterType="hashMap" useGeneratedKeys="true" keyProperty="">
+ 		INSERT INTO TBL_MEMBERS(USERID, USERNAME, USERPW, USERTEL, USEREMAIL, USERIMG, USERREGDATE, USERENABLED)
+ 		VALUES(#{USERID}, #{USERNAME}, #{USERPW}, #{USERTEL}, #{USEREMAIL}, 'default.png', Now(), 1)
+ 	</insert>
+ 	
+ 	<!-- setup admin 권한을 등록함. -->
+ 	<insert id="setSetupAdminRoleInsert" parameterType="hashMap">
+ 		INSERT INTO TBL_MEMBERS_ROLE(USERID, USERROLE)
+ 		VALUES(#{USERID}, 'ROLE_ADMIN')
+ 	</insert>
+	
+	<!-- 게시물 전체목록수를 가져오는 부분 -->
+	<select id="getTotalListCount" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} 
+		<include refid="productWhere"/>
+	</select>
+	
+	<!-- 페이지에 나타날 목록을 가져오는 부분 -->
+ 	<select id="getProductList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT CODESEQ, CODE, PRONAME, PRODUCTSORT, PROMONTH, PROWEEKEND, WEEKREPEAT, PROWEEK, DAYPERMINUTE, WRITER, REGDATE, USERNAME, USEREMAIL
+ 		FROM ${BOARDTBL} AS A JOIN TBL_MEMBERS AS B ON A.WRITER = B.USERID
+ 		<include refid="productWhere"/>
+ 		ORDER BY REGDATE DESC
+ 		LIMIT #{START}, #{END}
+ 	</select>
+ 	
+ 	<!-- 게시물 전체목록수를 가져오는 부분 -->
+	<select id="getBoardTotalList" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} 
+		<include refid="productWhere"/>
+	</select>
+	
+	<!-- 페이지에 나타날 목록을 가져오는 부분 -->
+ 	<select id="getBoardList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT BOARDID, BOARDTBL, BOARDNAME, LISTPERPAGE, PAGEPERBLOCK, LIST, VIEW, REG, EDIT, REPLY, DEL
+ 		FROM ${BOARDTBL}
+ 		<include refid="productWhere"/>
+ 		ORDER BY BOARDID ASC
+ 		LIMIT #{START}, #{END}
+ 	</select>
+ 	
+ 	<select id="getTableList" resultType="hashMap">
+ 		SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'LMS' 		
+ 	</select>
+ 	
+ 	<select id="getBoardSetupDetail" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM ${BOARDTBL} WHERE BOARDID = #{BOARDID}
+	</select>
+	
+	<update id="setBoardSetupDetailUpdate" parameterType="hashMap">
+		UPDATE ${BOARDTBL} SET BOARDNAME = #{BOARDNAME}, ISREPLY = #{ISREPLY},  
+		ISCOMMENT = #{ISCOMMENT}, ISRECOMMANDATION = #{ISRECOMMANDATION}, ISNORECOMMANDATION = #{ISNORECOMMANDATION},
+		VIEW = #{VIEW}, REG = #{REG}, REPLY = #{REPLY}, EDIT = #{EDIT}, DEL = #{DEL}, COMMENT = #{COMMENT},
+		TITLELENGTH = #{TITLELENGTH}, LISTPERPAGE = #{LISTPERPAGE}, PAGEPERBLOCK = #{PAGEPERBLOCK}
+		WHERE BOARDID = #{BOARDID} 
+	</update>
+	
+	<update id="setBoardSetupRoleUpdate" parameterType="hashMap">
+		UPDATE TBL_BOARDCONFIG SET VIEW = #{setView}, REG = #{setReg},  
+		REPLY = #{setReply}, EDIT = #{setEdit}, DEL = #{setDel}
+		WHERE BOARDID = #{setBoardId} 
+	</update>
+	
+	<insert id="setBoardSetupInsert" parameterType="hashMap">
+		INSERT INTO ${BOARDTBL}(
+		   BOARDID,BOARDTBL,BOARDNAME,LISTPERPAGE,PAGEPERBLOCK,LIST,VIEW,REG,EDIT
+		  ,REPLY,DEL,COMMENT,TITLELENGTH,ISREPLY,ISCOMMENT,ISRECOMMANDATION,ISNORECOMMANDATION
+		  ,IMAGECOUNT,FILECOUNT
+		) VALUES (
+		   #{BOARDID},#{BOARDTBLNEW},#{BOARDNAME},#{LISTPERPAGE},#{PAGEPERBLOCK},#{LISTI},#{VIEWSI},#{REGI}
+		  ,#{EDITSI},#{REPLYI},#{DELI},#{COMMENTI},#{TITLELENGTH},#{ISREPLY},#{ISCOMMENT},#{ISRECOMMANDATION}
+		  ,#{ISNORECOMMANDATION},0 ,0  
+		)
+ 	</insert>
+
+	<select id="getBoardConfig" resultType="hashMap">
+		SELECT BOARDID FROM ${BOARDTBL} WHERE BOARDID = #{BOARDID} AND BOARDTBL = #{BOARDTBLNEW};
+	</select>
+	
+	<select id="getUserRoleList" resultType="hashMap">
+		SELECT DISTINCT(USERROLE) FROM TBL_MEMBERS_ROLE;
+	</select>
+	
+ 	<!-- 상품등록코드를 등록하는 부분 -->
+ 	<insert id="setProductCodeInsert" parameterType="hashMap">
+ 		<selectKey order="BEFORE" keyProperty="CODE" resultType="String">
+ 			<!-- SELECT MAX(CODE)+1 FROM ${BOARDTBL} -->
+ 			SELECT LPAD(AUTO_INCREMENT, 6, '0') FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = #{BOARDTBL}
+ 		</selectKey>
+ 		INSERT INTO ${BOARDTBL}(CODE, PRONAME, PRODUCTSORT, PROMONTH, PROWEEKEND, WEEKREPEAT, PROWEEK, DAYPERMINUTE, WRITER, REGDATE)
+ 		VALUES(#{CODE}, #{PRONAME}, #{PRODUCTSORT}, #{PROMONTH}, #{PROWEEKEND}, #{WEEKREPEAT}, #{PROWEEK}, #{DAYPERMINUTE}, #{WRITER}, Now())
+ 	</insert>
+ 	
+ 	<delete id="setCodeDelete" parameterType="hashMap">
+		DELETE FROM TBL_PRODUCT_CODE WHERE CODESEQ = #{CODESEQ};
+	</delete>
+ 	
+ 	<!-- 상품등록 정보를 가져오는 부분. -->
+ 	<select id="getProductCode" parameterType="hashMap" resultType="hashMap">
+ 		SELECT CODESEQ, CODE, PRONAME, PRODUCTSORT, PROMONTH, PROWEEKEND, WEEKREPEAT, PROWEEK, DAYPERMINUTE 
+ 		FROM ${BOARDTBL} WHERE CODESEQ = #{CODESEQ}
+ 	</select>
+ 	
+ 	<update id="setProductCodeUpdate" parameterType="hashMap">
+ 		UPDATE ${BOARDTBL}
+ 		SET PRONAME = #{PRONAME}, PRODUCTSORT = #{PRODUCTSORT}, PROMONTH = #{PROMONTH}, PROWEEKEND = #{PROWEEKEND}, WEEKREPEAT = #{WEEKREPEAT}, PROWEEK = #{PROWEEK}, DAYPERMINUTE = #{DAYPERMINUTE}
+ 		WHERE CODESEQ = #{CODESEQ}
+ 	</update>
+ 	
+ 	<select id="getMemberEmailCheck" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} WHERE USEREMAIL = #{USEREMAIL}
+	</select>
+ 	
+</mapper>

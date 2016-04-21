@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.9" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+  <interface id="1" language="java" name="com.kpoint.LMS.account.service.AccountService" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/account/service/AccountService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="99" width="233" x="706" y="622"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="2" language="java" name="com.kpoint.LMS.account.controller.AccountController" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/account/controller/AccountController.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="171" width="373" x="566" y="15"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.kpoint.LMS.account.vo.Member" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/account/vo/Member.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="567" width="174" x="352" y="15"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.kpoint.LMS.account.dao.AccountDAO" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/account/dao/AccountDAO.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="171" width="252" x="979" y="622"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="com.kpoint.LMS.account.vo.UserDetailsVO" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/account/vo/UserDetailsVO.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="261" width="565" x="1252" y="15"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="com.kpoint.LMS.account.service.AccountServiceImpl" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/account/service/AccountServiceImpl.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="153" width="233" x="979" y="15"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="7">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="8" name="accountDAO"/>      
+      <multiplicity id="9" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="4" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="10">    
+    <end type="SOURCE" refId="6"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <association id="11">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="12" name="accountService"/>      
+      <multiplicity id="13" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="lecture">
+	<!--########################## 수강결제 ##########################--> 
+	<sql id="signWhere">
+		<if test='KEYWORD != null and KEYWORD != "" and KEYSTRING != null and KEYSTRING != ""'>
+			    AND TC.${KEYWORD} LIKE '%${KEYSTRING}%'  
+		</if>
+		<if test='beforeDate != null and afterDate != null and beforeDate != "" and afterDate != ""'>
+			<![CDATA[
+				AND TS.CREGDATE >= DATE(#{beforeDate}) AND TS.CREGDATE <= DATE(#{afterDate})
+			]]>
+		</if>
+	</sql>
+	<select id="getTotalList" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT 
+		FROM 
+ 			TBL_CURRICULUMNS TC,${BOARDTBL} TS 
+ 		WHERE 
+ 			TC.SEQ = TS.CSEQ AND TS.CSTATUS = #{STATUS}
+		<include refid="signWhere"/>
+	</select>
+	
+	<!-- 전체목록 개수를 가져오는 부분 -->
+ 	<select id="getSignUpList" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+			TC.SEQ, TC.CURCOURSE, TC.CURPRONAME, TC.CURMONTH, TC.CURMONTHPERIOD, TC.CURTEACHER, TC.CURSORT, TC.CURPRICE, TC.CURSALEPRICE, 
+        	TC.CURSALERATE, TC.CURMONTH, TC.CURPROWEEKEND, TC.CURPROWEEK, TC.CURWEEKPERCOUNT, TC.CURPROMINUTE, TC.CURTIMEPERIOD,
+        	TS.PSEQ,TS.CSEQ, TS.CPAY,TS.CSTATUS, TS.CWRITER, TS.CREGDATE 
+ 		FROM 
+ 			TBL_CURRICULUMNS TC,${BOARDTBL} TS 
+ 		WHERE 
+ 			TC.SEQ = TS.CSEQ AND TS.CSTATUS = #{STATUS}
+ 		<include refid="signWhere"/>
+ 		ORDER BY TS.CREGDATE DESC
+ 		LIMIT #{START}, #{END}
+ 	</select>
+ 	
+ 	<select id="getSignDetail" parameterType="hashMap" resultType="hashMap">
+ 		SELECT * FROM TBL_CURRICULUMNS TC,TBL_SIGNUP TS WHERE TC.SEQ = TS.CSEQ AND TS.PSEQ = ${SEQ}
+ 	</select>
+ 	
+ 	 <update id="setLecturePaymentUpdate" parameterType="hashMap">
+ 		UPDATE ${BOARDTBL} SET
+	 		CPAY = '카드결제,무통장(가상계좌)',CSTATUS = 'P'
+	 	WHERE PSEQ = ${SEQ}
+ 	</update>
+ 	
+ 	<update id="setLectureRefindUpdate" parameterType="hashMap">
+ 		UPDATE ${BOARDTBL} SET
+	 		CPAY = '환불',CSTATUS = 'R'
+	 	WHERE PSEQ = ${SEQ}
+ 	</update>
+ 	
+ 	<delete id="setLectureSignUpDelete"  parameterType="hashMap">
+ 		DELETE FROM ${BOARDTBL} WHERE PSEQ = #{SEQ}
+ 	</delete>
+
+</mapper>

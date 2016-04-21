@@ -1,0 +1,40 @@
+@charset "utf-8";
+/* CSS Document */
+a{color:#434343; text-decoration:none; }
+a:hover{color:#434343;}
+a.over:hover{color:#B6D5EB;}
+
+@font-face {
+  font-family: 'nanume';
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing:-1px;
+  src: url(./font/NanumGothic-Regular.eot);
+  src: url(./font/NanumGothic-Regular.eot?#iefix) format('embedded-opentype'),
+       url(./font/NanumGothic-Regular.woff2) format('woff2'),
+       url(./font/NanumGothic-Regular.woff) format('woff'),
+       url(./font/NanumGothic-Regular.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'nanumb';
+  font-style: normal;
+  font-weight: 600;
+  src: url(./font/NanumGothic-Bold.eot);
+  src: url(./font/NanumGothic-Bold.eot?#iefix) format('embedded-opentype'),
+       url(./font/NanumGothic-Bold.woff2) format('woff2'),
+       url(./font/NanumGothic-Bold.woff) format('woff'),
+       url(./font/NanumGothic-Bold.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'nanumeb';
+  font-style: normal;
+  font-weight: 800;
+  src: url(./font/NanumGothic-ExtraBold.eot);
+  src: url(./font/NanumGothic-ExtraBold.eot?#iefix) format('embedded-opentype'),
+       url(./font/NanumGothic-ExtraBold.woff2) format('woff2'),
+       url(./font/NanumGothic-ExtraBold.woff) format('woff'),
+       url(./font/NanumGothic-ExtraBold.ttf) format('truetype');
+}
+ 
+
+

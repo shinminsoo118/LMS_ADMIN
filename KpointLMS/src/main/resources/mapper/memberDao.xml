@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="member">
+	<!-- 회원 종류 구분 -->
+	<!-- memberSelect 사용하면 Where문 무조건 들어가니 FROM 맨 뒷라인에 작성하며 <where> tag쓸때 주의 -->
+	<sql id="memberSelect">
+		${BOARDTBL} MEMBERS, TBL_MEMBERS_ROLE ROLE WHERE ROLE.USERROLE = #{USERROLE} AND MEMBERS.USERID = ROLE.USERID
+		<!-- <choose>
+			<when test ='USERROLE == ""'>
+				${BOARDTBL} MEMBERS, TBL_MEMBERS_ROLE ROLE WHERE MEMBERS.USERID = ROLE.USERID
+			</when>
+			<otherwise>
+				${BOARDTBL} MEMBERS, TBL_MEMBERS_ROLE ROLE WHERE ROLE.USERROLE = #{USERROLE} AND MEMBERS.USERID = ROLE.USERID
+			</otherwise>
+		</choose> -->
+	</sql>
+
+	<!-- 회원 검색조건 -->
+	<sql id="memberWhere">
+		<if test='KEYWORD != null and KEYWORD != "" and KEYSTRING != ""'>
+			AND MEMBERS.${KEYWORD} LIKE '%${KEYSTRING}%'  
+		</if>
+		<if test='beforeDate != null and afterDate != null and beforeDate != "" and afterDate != ""'>
+			<!-- AND MEMBERS.USERREGDATE >= DATE(#{beforeDate}) AND MEMBERS.USERREGDATE <= DATE(#{beforeDate}) -->
+			<![CDATA[
+			AND MEMBERS.USERREGDATE >= DATE(#{beforeDate}) AND MEMBERS.USERREGDATE <= DATE(#{afterDate})
+			]]>
+		</if>
+	</sql>
+
+	<sql id="memberMailWhere">
+		<if test='KEYWORD != null and KEYWORD != "" and KEYSTRING != null and KEYSTRING != ""'>
+				WHERE ${KEYWORD} LIKE '%${KEYSTRING}%'  
+		</if>
+		<if test='beforeDate != null and afterDate != null and beforeDate != "" and afterDate != ""'>
+			<![CDATA[
+				AND REGDATE >= DATE(#{beforeDate}) AND REGDATE <= DATE(#{afterDate})
+			]]>
+		</if>
+	</sql>
+
+ 	<!-- 회원정보 중 STUDENT 만 가져옴 -->
+ 	<select id="memberList" resultType="hashmap">
+ 		SELECT MEMBERS.USERID, MEMBERS.USERNAME, MEMBERS.USERTEL, MEMBERS.USEREMAIL, MR.USERROLE,MEMBERS.USERREGDATE, @ROWNUM:=@ROWNUM+1 COUNT 
+ 		FROM (SELECT @ROWNUM:=${START})R, TBL_MEMBERS_ROLE MR, <include refid="memberSelect" /> 
+ 		<include refid="memberWhere" /> AND MR.USERID = MEMBERS.USERID
+ 		LIMIT #{START},#{END};
+ 	</select>
+ 	
+ 	<!-- 게시물 전체목록수를 가져오는 부분 -->
+	<select id="getTotalList" parameterType="hashMap" resultType="Integer">
+		<!-- SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} -->
+		SELECT COUNT(*) AS TOTAL_COUNT FROM <include refid="memberSelect" /> 
+		<include refid="memberWhere" />
+	</select>
+	
+ 	<insert id="setMailInsert" parameterType="hashMap" useGeneratedKeys="true" keyProperty="SEQ">
+ 		<selectKey keyProperty="SEQ" order="BEFORE" resultType="Integer" >
+ 			SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = #{BOARDTBL}
+ 		</selectKey>
+ 		INSERT INTO ${BOARDTBL}(BOARDID, GROUPS, WRITER, TITLE, COMMENTCNT, CONTENT,SENDTO,SENDCC, REGDATE, GROUPID)
+ 		VALUES(#{bid}, 'ALL', #{WRITER}, #{TITLE}, 0, #{CONTENT}, #{sendTo}, #{sendCC}, Now(), #{GROUPID})
+ 	</insert>
+ 	
+ 	 <insert id="setSmsInsert" parameterType="hashMap" useGeneratedKeys="true" keyProperty="SEQ">
+ 		<selectKey keyProperty="SEQ" order="BEFORE" resultType="Integer" >
+ 			SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = #{BOARDTBL}
+ 		</selectKey>
+ 		INSERT INTO ${BOARDTBL}(BOARDID, GROUPS, WRITER, TITLE, COMMENTCNT, CONTENT,SENDSMS, REGDATE, GROUPID)
+ 		VALUES(#{bid}, 'ALL', #{WRITER}, #{TITLE}, 0, #{CONTENT}, #{sendTo}, Now(), #{GROUPID})
+ 	</insert>
+
+	<delete id="memberDelete" parameterType="hashMap">
+		DELETE FROM TBL_MEMBERS WHERE USERID = #{USERID};
+	</delete>
+	
+	<select id="memberDetail" parameterType="hashMap" resultType="hashMap">
+		SELECT * FROM TBL_MEMBERS MEMBERS JOIN TBL_MEMBERS_ROLE ROLE ON MEMBERS.USERID = ROLE.USERID AND MEMBERS.USERID = #{USERID};  
+	</select>
+	
+	<update id="memberUpdate" parameterType="hashMap">
+		UPDATE TBL_MEMBERS MEMBERS, TBL_MEMBERS_ROLE ROLE 
+		SET MEMBERS.USERNAME = #{username},MEMBERS.USERSEX = #{usersex},
+		MEMBERS.USEREMAIL = #{useremail},MEMBERS.USERTEL = #{usertel},
+		MEMBERS.USERADDR = #{useraddr},ROLE.USERROLE = #{userrole},
+		MEMBERS.USERIMG = #{USERIMG} 
+		WHERE MEMBERS.USERID = #{USERID} AND ROLE.USERID = #{USERID}
+	</update>
+	
+	<insert id="memberProfileImgUpload" parameterType="hashMap">
+		INSERT INTO TBL_MEMBERS_PROFILEIMAGE VALUES(#{USERID},#{FILESIZE},#{FILENAME},#{FILESTRNAME}) 
+		ON DUPLICATE KEY UPDATE FILESIZE = #{FILESIZE}, FILENAME = #{FILENAME}, FILESTRNAME = #{FILESTRNAME};
+	</insert>
+	
+	<update id="memberRoleUpdate" parameterType="hashMap">
+		UPDATE TBL_MEMBERS_ROLE SET USERROLE = #{userRole} WHERE USERID = #{userId} 
+	</update>
+	
+<!--  	<select id="mailList" resultType="hashmap">
+ 		SELECT MEMBERS.USERID, MEMBERS.USERNAME, MEMBERS.USERTEL, MEMBERS.USEREMAIL, MEMBERS.USERREGDATE, @ROWNUM:=@ROWNUM+1 COUNT 
+ 		FROM (SELECT @ROWNUM:=${START})R, <include refid="memberSelect" /> 
+ 		<include refid="memberWhere" />
+ 		LIMIT #{START},#{END};
+ 	</select> -->
+ 	
+  	<select id="userMailList" resultType="hashmap">
+  		SELECT USERID, USEREMAIL,USERNAME FROM TBL_MEMBERS;
+ 	</select>
+ 	
+ 	<select id="userGroupList" resultType="hashmap">
+  		SELECT USERROLE FROM TBL_MEMBERS_ROLE GROUP BY USERROLE;
+ 	</select>
+ 	
+ 	<select id="userSmsList" resultType="hashmap">
+  		SELECT USERID, USERTEL,USERNAME FROM TBL_MEMBERS;
+ 	</select>
+ 	
+ 	<select id="groupSearchList" resultType="hashmap">
+  		SELECT MEMBERS.USERID,ROLE.USERROLE,MEMBERS.USERTEL,MEMBERS.USEREMAIL 
+  		FROM TBL_MEMBERS MEMBERS, TBL_MEMBERS_ROLE ROLE 
+  		WHERE MEMBERS.USERID = ROLE.USERID AND ROLE.USERROLE IN 
+		<foreach item="item" index="index" collection="groupSearch" separator="," open="(" close=")">#{item}</foreach>
+ 	</select>
+ 	
+ 	<select id="getMailTotalList" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} 
+		<include refid="memberMailWhere"/>
+	</select>
+	
+	 <select id="getMailList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT SEQ, BOARDID, GROUPS, WRITER, TITLE, COMMENTCNT, REGDATE, GROUPID, USERNAME, USEREMAIL
+ 		FROM ${BOARDTBL} AS A LEFT OUTER JOIN TBL_MEMBERS AS B ON A.WRITER = B.USERID
+ 		<include refid="memberMailWhere"/>
+ 		ORDER BY REGDATE DESC
+ 		LIMIT #{START}, #{END}
+ 	</select>
+ 	
+ 	 <select id="getSmsTotalList" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} 
+		<include refid="memberMailWhere"/>
+	</select>
+	
+	 <select id="getSmsList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT SEQ, BOARDID, GROUPS, WRITER, TITLE, COMMENTCNT, REGDATE, GROUPID, USERNAME, USEREMAIL
+ 		FROM ${BOARDTBL} AS A LEFT OUTER JOIN TBL_MEMBERS AS B ON A.WRITER = B.USERID
+ 		<include refid="memberMailWhere"/>
+ 		ORDER BY REGDATE DESC
+ 		LIMIT #{START}, #{END}
+ 	</select>
+ 	
+  	<select id="getMailDetail"  parameterType="hashmap" resultType="hashmap">
+ 		SELECT SEQ, BOARDID,GROUPS, WRITER, TITLE, CONTENT, GROUPID, SENDTO, SENDCC, REGDATE, USERNAME, USERIMG, USEREMAIL 
+ 		FROM ${BOARDTBL} AS A JOIN TBL_MEMBERS AS B ON A.WRITER = B.USERID
+ 		WHERE SEQ = #{SEQ}
+ 	</select>
+ 	
+ 	<select id="getSmsDetail"  parameterType="hashmap" resultType="hashmap">
+ 		SELECT SEQ, BOARDID,GROUPS, WRITER, TITLE, CONTENT, GROUPID, SENDSMS, REGDATE, USERNAME, USERIMG, USEREMAIL 
+ 		FROM ${BOARDTBL} AS A JOIN TBL_MEMBERS AS B ON A.WRITER = B.USERID
+ 		WHERE SEQ = #{SEQ}
+ 	</select>
+	
+</mapper>

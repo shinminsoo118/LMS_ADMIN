@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="document">
+
+	<!-- 게시판 검색조건 -->
+	<sql id="boardWhere">
+		<if test='KEYWORD != null and KEYWORD != "" and KEYSTRING != null and KEYSTRING != ""'>
+			<where>
+				<choose>
+					<when test='KEYWORD == "TITLE_CONTENT"'>
+						TITLE LIKE '%${KEYSTRING}%' OR CONTENT LIKE '%${KEYSTRING}%'
+					</when>
+					<otherwise>
+						${KEYWORD} LIKE '%${KEYSTRING}%'
+					</otherwise>
+				</choose>
+			</where>
+		</if>
+	</sql>	
+	<!-- 게시물 전체목록수를 가져오는 부분 -->
+	<select id="getTotalList" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} 
+		<include refid="boardWhere"/>
+	</select>
+
+	<!-- 페이지에 나타날 목록을 가져오는 부분 -->
+ 	<select id="getDocumentList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT SEQ, BOARDID, GROUPS, WRITER, TITLE, COMMENTCNT, REGDATE, HIT, GROUPID, DEPTH, ORDERINDEX, USERNAME, USEREMAIL
+ 		FROM ${BOARDTBL} AS A LEFT OUTER JOIN TBL_MEMBERS AS B ON A.WRITER = B.USERID
+ 		<include refid="boardWhere"/>
+ 		ORDER BY GROUPID DESC, ORDERINDEX ASC
+ 		LIMIT #{START}, #{END}
+ 	</select>
+
+ 	<insert id="setDocumentInsert" parameterType="hashMap" useGeneratedKeys="true" keyProperty="SEQ">
+ 		<selectKey keyProperty="SEQ" order="BEFORE" resultType="Integer" >
+ 			SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = #{BOARDTBL}
+ 		</selectKey>
+ 		INSERT INTO ${BOARDTBL}(BOARDID, GROUPS, WRITER, TITLE, COMMENTCNT, CONTENT, REGDATE, HIT, GROUPID, DEPTH, ORDERINDEX)
+ 		VALUES(#{bid}, 'ALL', #{WRITER}, #{TITLE}, 0, #{CONTENT}, Now(), 0, #{GROUPID}, 0, 0)
+ 	</insert>
+
+ 	<!-- 페이지 보기, 페이지를 만하루가 지나서 처음인지 아닌지 확인 -->
+ 	<select id="getDocumentViewCount" parameterType="hashmap" resultType="hashMap">
+ 		<![CDATA[
+ 			SELECT COUNT(*) AS SEQCOUNT FROM TBL_VIEW_UPDATES
+ 			WHERE BOARDID = #{bid} 
+ 			AND BOARDSEQ = #{SEQ}
+ 			AND VIEWUSER = #{VIEWUSER}
+ 			AND VIEWPAGE = 'Y'
+ 			AND (DATE(VIEWDATE) >= DATE_SUB(now(), INTERVAL 1 DAY) AND DATE(VIEWDATE) <= DATE(now()))
+ 		]]>
+ 	</select>
+ 	
+ 	<!-- 페이지상세보기가 만하루가 지났으면 TBL_VIEW_UPDATES 입력 -->
+ 	<insert id="setDocumentViewInsert" parameterType="hashmap" >
+ 		INSERT INTO TBL_VIEW_UPDATES(BOARDID, BOARDSEQ, VIEWUSER, VIEWPAGE, VIEWDATE)
+ 		VALUES(#{bid}, #{SEQ}, #{VIEWUSER}, 'Y', Now())
+ 	</insert>
+ 	
+ 	<!-- 페이지 상세보기 부분을 가져오는 곳 -->
+ 	<select id="getDocumentDetail"  parameterType="hashmap" resultType="hashmap">
+ 		SELECT SEQ, BOARDID, WRITER, TITLE, CONTENT, GROUPID, DEPTH, ORDERINDEX, REGDATE, RECOMMANDATION, NORECOMMANDATION, HIT, USERNAME, USERIMG, USEREMAIL 
+ 		FROM ${BOARDTBL} AS A JOIN TBL_MEMBERS AS B ON A.WRITER = B.USERID
+ 		WHERE SEQ = #{SEQ}
+ 	</select>
+ 	
+ 	<!-- 조회수를 업데이트 함. -->
+ 	<update id="setDocumentHitUpdate" parameterType="hashMap">
+ 		UPDATE ${BOARDTBL} 
+ 		SET HIT = HIT+1
+ 		WHERE SEQ = #{SEQ} AND BOARDID = #{bid}
+ 	</update>
+
+ 	<!-- 게시판 글을 수정함 -->
+ 	<update id="setDocumentUpdate"  parameterType="hashMap">
+ 		UPDATE ${BOARDTBL}
+ 		SET TITLE=#{TITLE}, CONTENT=#{CONTENT}
+ 		WHERE SEQ = #{SEQ}
+ 	</update>
+ 	
+ 	<!-- 게시판 글을 삭제함. -->
+ 	<delete id="setDocumentDelete" parameterType="hashMap">
+ 		DELETE FROM ${BOARDTBL}
+ 		WHERE GROUPID = #{GROUPID}
+ 		AND ORDERINDEX >= #{ORDERINDEX}
+ 	</delete>
+ 	
+ 	<delete id="setDocumentDeleteOfOrderIndex" parameterType="hashMap">
+ 		<![CDATA[
+ 			DELETE FROM ${BOARDTBL}
+	 		WHERE GROUPID = #{GROUPID}
+	 		AND ORDERINDEX >= #{ORDERINDEX}
+	 		AND ORDERINDEX < #{orderIndex}
+ 		]]>
+ 	</delete>
+ 	
+ 	<delete id="setDocCommentAll"  parameterType="hashMap">
+ 		DELETE FROM TBL_BOARD_COMMENTS
+ 		WHERE BOARDID = #{bid}
+ 		AND BOARDSEQ = #{SEQ}
+ 	</delete>
+ 	
+ 	<!-- 답글게시판의 조건에 맞는 Order의 값을 가져옴 null 이거나 조건에 맞는 최소값 -->
+	<select id="getDocumentOrderIndex" parameterType="hashmap" resultType="Object">
+		<![CDATA[
+			SELECT MIN(ORDERINDEX) FROM ${BOARDTBL} 
+			WHERE GROUPID = #{GROUPID} 
+			AND ORDERINDEX > #{ORDERINDEX}
+			AND DEPTH <= #{DEPTH}
+		]]>
+	</select>
+
+</mapper>

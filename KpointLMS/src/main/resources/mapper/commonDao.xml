@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="common">
+	<!-- 보드 설정파일을 가져오는 부분 -->
+ 	<select id="getBoardConfig" parameterType="hashmap" resultType="hashmap">
+ 		SELECT * FROM TBL_BOARDCONFIG WHERE BOARDID = #{bid}
+ 	</select>
+ 	
+ 	<select id="selectFileInfo" parameterType="hashmap" resultType="hashmap">
+ 		SELECT FILENAME, FILESTRNAME,BOARDID FROM TBL_ATTACHEDFILES
+ 		WHERE FILESEQ = #{FILESEQ}
+ 	</select>
+ 	
+ 	<!-- 파일을 디비에 저장하는 부분 -->
+ 	<insert id="setFileInsert" parameterType="hashmap">
+ 		INSERT INTO TBL_ATTACHEDFILES(BOARDID, BOARDSEQ, FILEWRITER, FILESIZE, FILENAME, FILESTRNAME)
+ 		VALUES(#{BOARDID}, #{BOARDSEQ}, #{FILEWRITER}, #{FILESIZE}, #{FILENAME}, #{FILESTRNAME})
+ 	</insert>
+ 	
+ 	<!-- 임시로 파일업로드한 파일 정보를 가져옴. -->
+ 	<select id="getTempFileList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT FILESEQ, BOARDID, BOARDSEQ, FILEWRITER, FILESIZE, FILENAME, FILESTRNAME FROM TBL_ATTACHEDFILES
+ 		WHERE BOARDID = #{bid} AND FILEWRITER = #{FILEWRITER} AND FILESEQ > #{MAXFILESEQ} 
+ 	</select>
+ 	
+ 	<select id="getTempMaxFileSeq" parameterType="hashMap" resultType="hashMap">
+ 		SELECT MAX(FILESEQ) AS FILESEQ FROM TBL_ATTACHEDFILES WHERE FILEWRITER = #{FILEWRITER} 
+ 	</select>
+ 	
+ 	<select id="getFileList"  parameterType="hashMap" resultType="hashMap">
+ 		SELECT FILESTRNAME FROM TBL_ATTACHEDFILES WHERE FILEWRITER = #{TempFILEWRITER}
+ 	</select>
+ 	
+ 	<!-- 페이지를 벗어났을때 디비에서 파일이름을 삭제 -->
+ 	<delete id="setFileDelete"  parameterType="hashMap">
+ 		DELETE FROM TBL_ATTACHEDFILES WHERE BOARDSEQ = #{SEQ}
+ 	</delete>
+ 	
+ 	 <delete id="setFileNullDelete"  parameterType="hashMap">
+ 		DELETE FROM TBL_ATTACHEDFILES WHERE BOARDSEQ is NULL
+ 	</delete>
+ 	
+ 	<!-- 파일리스트목록을 가져오는 부분 -->
+ 	<select id="getFileLists" parameterType="hashMap" resultType="hashMap">
+ 		SELECT FILESEQ, BOARDID, BOARDSEQ, FILEWRITER, FILESIZE, FILENAME, FILESTRNAME, FILESIZE FROM TBL_ATTACHEDFILES
+ 		WHERE BOARDID = #{bid} AND BOARDSEQ = #{SEQ} 
+ 	</select>
+ 	
+ 	 <select id="getFileListNull" parameterType="hashMap" resultType="hashMap">
+ 		SELECT FILESEQ, BOARDID, BOARDSEQ, FILEWRITER, FILESIZE, FILENAME, FILESTRNAME, FILESIZE FROM TBL_ATTACHEDFILES
+ 		WHERE BOARDID = #{bid} AND BOARDSEQ is NULL 
+ 	</select>
+ 	
+ 	<!-- 파일이름으로 디비에서 파일 지우기 -->
+ 	<delete id="setFileListDelete" parameterType="String">
+ 		DELETE FROM TBL_ATTACHEDFILES WHERE FILESTRNAME = #{fileName}
+ 	</delete>
+ 	
+ 	<!-- 임시로 저장된 파일작성자, BOARDSEQ 값을 업데이트 함. -->
+ 	<update id="setFileUpdate" parameterType="hashMap">
+ 		UPDATE TBL_ATTACHEDFILES SET BOARDSEQ = #{SEQ}, FILEWRITER = #{WRITER} WHERE FILEWRITER=#{TempFILEWRITER}
+ 	</update>
+ 	
+ 	<!-- 첨부파일에서 파일이름을 가져오는 부분 -->
+ 	<select id="getFileNames" parameterType="hashMap" resultType="hashMap">
+ 		SELECT FILESTRNAME,BOARDID,BOARDSEQ FROM TBL_ATTACHEDFILES
+ 		WHERE BOARDID = #{bid} AND BOARDSEQ = #{SEQ}
+ 	</select>
+ 	
+ 	<!-- 첨부파일에서 단일이름만 가져오는 부분 -->
+ 	<select id="getFileName" parameterType="hashMap" resultType="hashMap">
+ 		SELECT FILESTRNAME FROM TBL_ATTACHEDFILES
+ 		WHERE FILESEQ = #{FILESEQ}
+ 	</select>
+ 	
+ 	<delete id="setOneFileDelete" parameterType="hashMap">
+ 		DELETE FROM TBL_ATTACHEDFILES
+ 		WHERE FILESEQ = #{FILESEQ}
+ 	</delete>
+</mapper>
+

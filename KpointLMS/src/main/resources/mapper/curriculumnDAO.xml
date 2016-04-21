@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="curriculumn">
+	<!--########################## 게시판 관련 부분 ##########################--> 
+	<!-- 게시판 검색조건 -->
+	<sql id="curWhere">
+		<if test='KEYWORD != null and KEYWORD != "" and KEYSTRING != null and KEYSTRING != ""'>
+			    AND ${KEYWORD} LIKE '%${KEYSTRING}%'  
+		</if>
+		<if test='beforeDate != null and afterDate != null and beforeDate != "" and afterDate != ""'>
+			<![CDATA[
+				AND REGDATE >= DATE(#{beforeDate}) AND REGDATE <= DATE(#{afterDate})
+			]]>
+		</if>
+	</sql>
+	
+	<!-- 게시물 전체목록수를 가져오는 부분 -->
+	<select id="getTotalList" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM ${BOARDTBL} WHERE CURSTATUS = #{CURSTATUS}
+		<include refid="curWhere"/>
+	</select>
+	
+	<!-- 전체목록 개수를 가져오는 부분 -->
+ 	<select id="getCurriculumnList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT SEQ, CURCOURSE, CURPRONAME, CURMONTH, CURMONTHPERIOD, CURTEACHER, CURSORT, CURPRICE, CURSALEPRICE, CURSALERATE, CURMONTH, CURPROWEEKEND, CURPROWEEK, CURWEEKPERCOUNT,CURPROMINUTE, CURTIMEPERIOD
+ 		FROM ${BOARDTBL} WHERE CURSTATUS = #{CURSTATUS}
+ 		<include refid="curWhere"/>
+ 		ORDER BY SEQ DESC
+ 		LIMIT #{START}, #{END}
+ 	</select>
+ 	
+ 	<!-- 상세정보내용을 가져오는 부분 -->
+ 	<select id="getCurriculmnDetail" parameterType="hashMap" resultType="hashMap">
+ 		SELECT * FROM ${BOARDTBL} WHERE SEQ = #{SEQ}
+ 	</select>
+ 	
+ 	
+ 	<select id="getProductCodeList" parameterType="hashMap" resultType="hashMap">
+ 		SELECT CODESEQ, PRONAME FROM TBL_PRODUCT_CODE ORDER BY CODESEQ ASC
+ 	</select>
+ 	
+ 	<select id="getCurriculumnRegist" parameterType="hashMap" resultType="hashMap">
+ 		SELECT CODESEQ, CODE, PRONAME, PRODUCTSORT, PROMONTH, PROWEEKEND, WEEKREPEAT, PROWEEK, DAYPERMINUTE
+ 		FROM TBL_PRODUCT_CODE ORDER BY REGDATE DESC
+ 	</select>
+ 	
+ 	<select id="getProductDetailInfo" parameterType="hashMap" resultType="hashMap">
+ 		SELECT CODE, PRODUCTSORT, PROMONTH, PROWEEKEND, WEEKREPEAT, PROWEEK, DAYPERMINUTE
+ 		FROM TBL_PRODUCT_CODE WHERE CODESEQ = #{CODESEQ}
+ 	</select>
+ 	
+ 	<!-- 새로운 교육과정을 등록 -->
+ 	<insert id="setCurriculumnInsert" parameterType="hashMap" useGeneratedKeys="true" keyProperty="SEQ">
+ 		<selectKey keyProperty="SEQ" order="BEFORE" resultType="String" >
+ 			SELECT LPAD(AUTO_INCREMENT,6,0) FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = #{BOARDTBL}
+ 			<!-- select auto_increment from information_schema.tables where table_name=#{BOARDTBL} -->
+ 		</selectKey>
+ 		INSERT INTO ${BOARDTBL}(
+ 					  PROCODE, CURCODE, CURCOURSE, CURPRONAME, CURSORT, CURMONTH, CURMONTHPERIOD, 
+ 					  CURPROWEEK, CURPROWEEKEND, CURWEEKPERCOUNT, CURTIMEPERIOD, CURPROMINUTE, CURPRICESORT, 
+ 					  CURPRICESALESORT, CURSALERATE, CURPRICE, CURSALEPRICE, CURTEACHER, CURATTENDANT, CURMEMBERCOUNT, 
+ 					  CURSTATUS, CONTENT, CURREGPERIOD, REGDATE)
+ 		VALUES(
+ 					  #{PROCODE}, #{SEQ}, #{CURCOURSE}, #{CURPRONAME}, #{CURSORT}, #{CURMONTH}, #{CURMONTHPERIOD}, 
+ 			  		  #{CURPROWEEK},#{CURPROWEEKEND}, #{CURWEEKPERCOUNT}, #{CURTIMEPERIOD}, #{CURPROMINUTE}, #{CURPRICESORT}, 
+ 			   		  #{CURPRICESALESORT},#{CURSALERATE}, #{CURPRICE}, #{CURSALEPRICE}, #{CURTEACHER}, #{CURATTENDANT}, #{CURMEMBERCOUNT}, 
+ 			          #{CURSTATUS}, #{CONTENT}, #{CURREGPERIOD}, Now()
+ 			  )
+ 	</insert>
+ 	
+ 	<select id="getCurMemberCount" parameterType="hashMap" resultType="Integer">
+		SELECT COUNT(*) AS TOTAL_COUNT FROM TBL_SIGNUP WHERE CSEQ = #{CURSEQ} AND CSTATUS IN ('S','P');
+	</select>
+ 	
+ 	 <insert id="setCourseRegInsert" parameterType="hashMap" useGeneratedKeys="true" keyProperty="PSEQ">
+ 		<selectKey keyProperty="PSEQ" order="BEFORE" resultType="String" >
+ 			SELECT LPAD(AUTO_INCREMENT,6,0) FROM  INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'TBL_SIGNUP'
+ 			<!-- select auto_increment from information_schema.tables where table_name=#{BOARDTBL} -->
+ 		</selectKey>
+ 		INSERT INTO TBL_SIGNUP(
+    		CSEQ, CPAY, CPRICE, CSTATUS, CWRITER, CREGDATE
+ 		)VALUES( 
+ 			#{CURSEQ}, #{CURPAY}, #{CURPRICE}, #{STATUS}, #{WRITER},Now()
+ 		)
+ 	</insert>
+ 	
+ 	<!-- 교육과정을 수정 -->
+ 	<update id="setCurriculumnUpdate">
+ 		UPDATE ${BOARDTBL} SET
+	 		PROCODE = #{PROCODE}, CURCOURSE = #{CURCOURSE}, CURPRONAME = #{CURPRONAME}, CURSORT = #{CURSORT}, CURMONTH = #{CURMONTH}, 
+	 		CURMONTHPERIOD = #{CURMONTHPERIOD}, CURPROWEEK = #{CURPROWEEK}, CURPROWEEKEND = #{CURPROWEEKEND}, CURWEEKPERCOUNT = #{CURWEEKPERCOUNT}, 
+	 		CURTIMEPERIOD = #{CURTIMEPERIOD}, CURPROMINUTE = #{CURPROMINUTE}, CURPRICESORT = #{CURPRICESORT}, 
+	 		CURPRICESALESORT = #{CURPRICESALESORT}, CURSALERATE = #{CURSALERATE}, CURPRICE = #{CURPRICE}, 
+	 		CURSALEPRICE = #{CURSALEPRICE}, CURTEACHER = #{CURTEACHER}, CURATTENDANT = #{CURATTENDANT}, 
+	 		CURMEMBERCOUNT = #{CURMEMBERCOUNT}, CURSTATUS = #{CURSTATUS}, CONTENT = #{CONTENT}, CURREGPERIOD = #{CURREGPERIOD}
+	 	WHERE SEQ = ${SEQ}
+ 					  
+ 	</update>
+ 	
+ 	<delete id="setCurriculumnDelete"  parameterType="hashMap">
+ 		DELETE FROM ${BOARDTBL} WHERE SEQ = #{SEQ}
+ 	</delete>
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/beans 
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/tx 
+     http://www.springframework.org/schema/tx/spring-tx.xsd
+     http://www.springframework.org/schema/aop 
+     http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+   
+ 
+<!--   <aop:config>
+ 
+    <aop:pointcut id="serviceOperation"
+          expression="execution(* com.kpoint.LMS..service.*Impl.setBoard*(..)) or execution(* com.kpoint.LMS..service.*Impl.getBoard*(..))"/>
+ 
+    <aop:advisor pointcut-ref="serviceOperation" advice-ref="txAdvice"/>
+ 
+  </aop:config> -->
+ 
+  <!-- 이 두 빈은 트랜잭션이 적용될 것이다... -->
+  <!-- <bean id="BoardService" class="com.kpoint.LMS.board.service.BoardServiceImpl"/> -->
+  <!-- <bean id="barService" class="x.y.service.extras.SimpleBarService"/> -->
+ 
+  <!-- ... 그리고 이 두 빈은 트랜잭션이 적용되지 않는다 -->
+  <!-- <bean id="anotherService" class="org.xyz.SomeService"/> (적합한 패키지에 있지 않다) -->
+<!--   <bean id="barManager" class="x.y.service.SimpleBarManager"/> (이름이 'Service'로 끝나지 않는다) -->
+ 
+<!--   <tx:advice id="txAdvice">
+    <tx:attributes>
+      <tx:method name="get*" read-only="true"/>
+      <tx:method name="*"/>
+    </tx:attributes>
+  </tx:advice> -->
+ 
+  <!-- PlatformTransactionManager와 같은 다른 트랜잭션 인프라스트럭처 빈은 생략했다... -->
+ 
+ <!-- JDBC DataSource를 관리하는 트랜잭션 관리자 설정 -->
+
+
+	 
+ </beans>

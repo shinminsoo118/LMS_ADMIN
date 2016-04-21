@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.9" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
+  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+  <class id="1" language="java" name="com.kpoint.LMS.common.util.ShaEncoder" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/util/ShaEncoder.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="135" width="185" x="397" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="com.kpoint.LMS.common.dao.CommonDAO" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/dao/CommonDAO.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="351" width="333" x="2642" y="548"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="com.kpoint.LMS.common.resolver.CustomMapArgumentResolver" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/resolver/CustomMapArgumentResolver.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="117" width="566" x="622" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="4" language="java" name="com.kpoint.LMS.common.service.CommonServiceImpl" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/service/CommonServiceImpl.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="261" width="379" x="2359" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="5" language="java" name="com.kpoint.LMS.common.logger.LoggerAspect" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/logger/LoggerAspect.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="153" width="199" x="1228" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="6" language="java" name="com.kpoint.LMS.common.controller.CommonController" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/controller/CommonController.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="189" width="389" x="3015" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="7" language="java" name="com.kpoint.LMS.common.common.CommandMap" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/common/CommandMap.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="297" width="205" x="1467" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="8" language="java" name="com.kpoint.LMS.common.logger.LoggerInterceptor" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/logger/LoggerInterceptor.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="135" width="420" x="1712" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="9" language="java" name="com.kpoint.LMS.common.service.CommonService" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/service/CommonService.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="207" width="379" x="3015" y="548"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="10" language="java" name="com.kpoint.LMS.common.util.CommonUtils" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/util/CommonUtils.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="99" width="147" x="2172" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="11" language="java" name="com.kpoint.LMS.common.aop.BoardConfigAspect" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/aop/BoardConfigAspect.java" binary="false" 
+    corner="BOTTOM_RIGHT">    
+    <position height="153" width="267" x="3444" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="12" language="java" name="com.kpoint.LMS.common.dao.AbstractDAO" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/dao/AbstractDAO.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="297" width="197" x="2778" y="211"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="13" language="java" name="com.kpoint.LMS.common.util.FileUtils" project="KpointLMS" 
+    file="/KpointLMS/src/main/java/com/kpoint/LMS/common/util/FileUtils.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="189" width="439" x="2163" y="548"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <association id="14">    
+    <end type="SOURCE" refId="11" navigable="false">      
+      <attribute id="15" name="commonService"/>      
+      <multiplicity id="16" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="17">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="18" name="commonDAO"/>      
+      <multiplicity id="19" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <generalization id="20">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <association id="21">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="22" name="fileUtils"/>      
+      <multiplicity id="23" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="13" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="24">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="9"/>  
+  </realization>  
+  <association id="25">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="26" name="commonService"/>      
+      <multiplicity id="27" minimum="0" maximum="1"/>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

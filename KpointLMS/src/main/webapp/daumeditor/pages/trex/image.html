@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Daum에디터 - 이미지 첨부</title> 
+<script src="../../js/popup.js" type="text/javascript" charset="utf-8"></script>
+<link rel="stylesheet" href="../../css/popup.css" type="text/css"  charset="utf-8"/>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+	
+	function done() {
+		console.log(execAttach);
+		if (typeof(execAttach) == 'undefined') { //Virtual Function
+	        return;
+	    }
+		
+		var _mockdata = {
+			'imageurl': 'url',
+			'filename': 'test.gif',
+			'filesize': 640,
+			'imagealign': 'C',
+			'originalurl': 'test',
+			'thumburl': 'test'
+		};
+		execAttach(_mockdata);
+		//closeWindow();
+	}
+
+	function initUploader(){
+	    var _opener = PopupUtil.getOpener();
+	    if (!_opener) {
+	        alert('잘못된 경로로 접근하셨습니다.');
+	        return;
+	    }
+	    
+	    var _attacher = getAttacher('image', _opener);
+	    registerAction(_attacher);
+	}
+// ]]>
+
+	function fileUploadPreview(thisObj, preViewer) {
+        if(!/(\.gif|\.jpg|\.jpeg|\.png)$/i.test(thisObj.value)) {
+            alert("이미지 형식의 파일을 선택하십시오");
+            return;
+        }
+
+       preViewer = (typeof(preViewer) == "object") ? preViewer : document.getElementById(preViewer);
+        var ua = window.navigator.userAgent;
+
+       if (ua.indexOf("MSIE") > -1) {
+            var img_path = "";
+            if (thisObj.value.indexOf("\\fakepath\\") < 0) {
+                img_path = thisObj.value;
+            } else {
+                thisObj.select();
+                var selectionRange = document.selection.createRange();
+                img_path = selectionRange.text.toString();
+                thisObj.blur();
+            }
+            preViewer.style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='fi" + "le://" + img_path + "', sizingMethod='scale')";
+        } else {
+            preViewer.innerHTML = "";
+            var W = preViewer.offsetWidth;
+            var H = preViewer.offsetHeight;
+            var tmpImage = document.createElement("img");
+            preViewer.appendChild(tmpImage);
+
+           tmpImage.onerror = function () {
+                return preViewer.innerHTML = "";
+            }
+
+           tmpImage.onload = function () {
+                if (this.width > W) {
+                    this.height = this.height / (this.width / W);
+                    this.width = W;
+                }
+                if (this.height > H) {
+                    this.width = this.width / (this.height / H);
+                    this.height = H;
+                }
+            }
+            if (ua.indexOf("Firefox/3") > -1) {
+                var picData = thisObj.files.item(0).getAsDataURL();
+                tmpImage.src = picData;
+            } else {
+                tmpImage.src = "file://" + thisObj.value;
+            }
+        }
+    }
+
+
+</script>
+</head>
+<body onload="initUploader();">
+<div class="wrapper">
+	<div class="header">
+		<h1>사진 첨부</h1>
+	</div>	
+	<div class="body">
+		<!-- <form method="post" enctype="multipart/form-data" action="../../image_uploader.php"> -->
+		    <input type="file" name="input_file" id="input_file">
+		    <input type="submit" value="업로드1">
+		<!-- </form> -->
+		
+		<dl class="alert">
+		    <dt>사진 첨부 확인1</dt>
+		    <dd>
+		    	확인을 누르시면 임시 데이터가 사진첨부 됩니다.<br /> 
+			</dd>
+			 <input id="fileData" name="fileData" type="file" onchange="fileUploadPreview(this, 'preView')" />
+     		 <div id="preView" class="preView" title="이미지미리보기"></div>
+
+		</dl>
+	</div>
+	<div class="footer">
+		<p><a href="#" onclick="closeWindow();" title="닫기" class="close">닫기</a></p>
+		<ul>
+			<li class="submit"><a href="#" onclick="done();" title="등록" class="btnlink">등록</a> </li>
+			<li class="cancel"><a href="#" onclick="closeWindow();" title="취소" class="btnlink">취소</a></li>
+		</ul>
+	</div>
+</div>
+</body>
+</html>

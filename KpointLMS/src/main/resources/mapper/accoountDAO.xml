@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="account">
+ 	<select id="getMember" parameterType="String" resultType="hashmap">
+		SELECT A.USERID AS username, USERPW AS password, USERNAME, USEREMAIL, USERIMG, USERROLE
+		FROM TBL_MEMBERS AS A JOIN TBL_MEMBERS_ROLE AS B ON A.USERID = B.USERID
+		WHERE A.USERID = #{username}  
+ 	</select>
+ 	<!-- 회원이 있는지 없는지 검사. -->
+ 	<select id="getIsMember" parameterType="hashMap" resultType="hashMap">
+ 		SELECT USERID FROM TBL_MEMBERS WHERE USERID = #{USERID}
+ 	</select>
+ 	
+ 	<!-- 새로운 회원의 권한을 등록함. -->
+ 	<insert id="memberRoleInsert" parameterType="hashMap">
+ 		INSERT INTO TBL_MEMBERS_ROLE(USERID, USERROLE)
+ 		VALUES(#{USERID}, 'ROLE_USER')
+ 	</insert>
+ 	
+ 	<!-- 새로운 회원정보를 등록함. -->
+ 	<insert id="memberInsert"  parameterType="hashMap" useGeneratedKeys="true" keyProperty="">
+ 		INSERT INTO TBL_MEMBERS(USERID, USERNAME, USERPW, USERTEL, USEREMAIL, USERIMG, USERREGDATE, USERENABLED)
+ 		VALUES(#{USERID}, #{USERNAME}, #{USERPW}, #{USERTEL}, #{USEREMAIL}, 'default.png', Now(), 1)
+ 	</insert>
+ 	
+ 	<update id="memberLoginInfo" parameterType="hashMap">
+		UPDATE TBL_MEMBERS SET USERUPDATEDATE = Now() WHERE USERID = #{loginInfo} 
+	</update>
+ 
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xmlns:beans="http://www.springframework.org/schema/beans" 
+         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd         
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+   
+	<http auto-config="true" use-expressions="true">
+		<form-login 
+			login-page="/index.do" 
+			authentication-failure-url="/index.do?error=1" 
+			default-target-url="/loginSuccess.do" />
+		<logout logout-success-url="/logOut.do" delete-cookies="true" invalidate-session="true"/>
+		<intercept-url pattern="/administrator/**/" access="hasAnyRole('ROLE_ADMIN', 'ROLE_SUPERADMIN')" />
+		<intercept-url pattern="/lecture/**/" access="hasAnyRole('ROLE_STUDENT', 'ROLE_TEACHER', 'ROLE_ADMIN', 'ROLE_SUPERADMIN', 'ROLE_USER')" />
+		<intercept-url pattern="/" access="permitAll" />
+		<!-- 
+			logout-url : 로그아웃이 요청될 url (이 주소로 요청이 들어오면 security에서 알아서 logout시켜준다)​
+			logout-success-url : 로그아웃이 성공 후 이동할 주소
+			​delete-cookies : 쿠키 삭제 여부
+			​invalidate-session : 세션 제거 여부		
+		 -->
+		<session-management invalid-session-url="/index.do">
+        	 <concurrency-control max-sessions="1" expired-url="/index.do"/>
+      	</session-management>
+      	<!-- 
+      		invalid-session-url​ : 세션이 끊겼을때 이동 할 페이지
+			max-sessions="1" : 최대 허용 가능 세션 수​
+			expired-url="/index.do" :  중복 로그인이 일어났을 경우 이동 할 주소​
+      	 -->
+	</http>
+	
+	<!-- 로그인 구현하는 부분 -->
+	<authentication-manager>
+		<authentication-provider user-service-ref="accountService">
+			<password-encoder ref="passwordEncoder">
+				<!-- Salt 암호를 위한 부분 -->
+				<salt-source user-property="username"/>
+			</password-encoder>
+		</authentication-provider>
+	</authentication-manager>
+	
+	<beans:bean id="accountService" class="com.kpoint.LMS.account.service.AccountServiceImpl" />
+	
+	<!-- 비밀번호 Sha로 암호화 하는 부분 -->
+	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
+  		<beans:constructor-arg name="strength" value="256"></beans:constructor-arg>
+	</beans:bean>
+	
+	<!-- 
+		단일로 디비값 로그인 하는 경우
+		<jdbc-user-service id="memberService" data-source-ref="dataSource" 
+		users-by-username-query="SELECT USERID AS username, USERPW AS password, 1 AS enabled FROM TBL_MEMBERS WHERE USERID = ?"
+		authorities-by-username-query="SELECT USERID AS username, USERROLE AS authority FROM TBL_MEMBERS_ROLE WHERE USERID = ?"
+	/> 
+	-->
+</beans:beans>

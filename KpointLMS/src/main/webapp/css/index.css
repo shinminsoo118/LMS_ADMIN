@@ -1,0 +1,53 @@
+body{background:url(../images/index/bg.png) 50% 50% no-repeat; background-size:cover;}
+.txtBox{ position:absolute; left:80px; bottom:80px; width:50%; height:25%; background:url(../images/index/txt.png) 50% 50% no-repeat; background-size:95%; }
+.indexMenu{position:absolute; right:30px; top:30px; overflow:hidden;}
+.indexMenu li{width:80px; height:75px; margin:10px 10px; float:left; }
+.indexMenu li a{display:block; height:100%; color:#fff; position:relative; }
+.indexMenu li a span{font:bold 18px nanume; display:block; vertical-align:bottom; position:absolute; bottom:0; width:100%; height:15px; text-align:center; text-shadow:1px 1px 1px #000;}
+.indexMenu li.indexLecture a{background:url(../images/index/menuIcon01.png) 70% 15% no-repeat; }
+.indexMenu li.indexLogin a{background:url(../images/index/menuIcon02.png) 50% top no-repeat; }
+.indexMenu li.indexRegister a{background:url(../images/index/menuIcon03.png) 50% top no-repeat;}
+
+.join{position:absolute; left:50%; top:50%; width:550px; height:460px; margin-left:-275px; margin-top:-230px; box-sizing:border-box; background:#333; z-index:2; border:1px solid #222; display:none; z-index:30; opacity:0.95; box-shadow:0px 0px 8px rgba(0,0,0, 0.7)}
+.login{position:absolute; left:50%; top:50%; width:550px; height:330px; margin-left:-275px; margin-top:-160px; box-sizing:border-box; background:#333; z-index:2; border:1px solid #222; display:block;  z-index:30; opacity:0.95; box-shadow:0px 0px 8px rgba(0,0,0, 0.7)}
+.invite{position:absolute; left:50%; top:50%; width:550px; height:400px; margin-left:-275px; margin-top:-200px; box-sizing:border-box; background:#333; z-index:2; border:1px solid #222; display:none; z-index:30;}
+.indexTitle{font-size:20px; color:#fff; font-weight:bold; font-family:tahoma; height:85px; border-bottom:1px solid #191919; line-height:85px; box-sizing:border-box; padding-left:90px; }
+.loginTitle, .joinTitle{background:url(../images/index/loginIcon.png) 30px center no-repeat; }
+.inviteTitle{background:url(../images/index/loginIcon.png) 30px center no-repeat; }
+.loginTitle span{display:block; height:85px; background:url(../images/index/logTxt.png) left center no-repeat;}
+.loginTitle span h4{font:bold 15px nanume; color:#ff6701; height:85px; line-height:85px; padding-left:180px;  }
+.joinTitle > span{display:block; height:85px; background:url(../images/index/joinTxt.png) left center no-repeat;}
+.joinTitle  h4{font:bold 12px nanume; color:#ff6701; padding-left:210px; padding-top:35px;}
+.inviteTitle span{display:block; height:85px; background:url(../images/index/inviteTxt.png) left center no-repeat;}
+.indexContent{height:415px; box-sizing:border-box; padding:10px 30px; border-top:1px solid #515151;}
+.indexList{}
+.indexList li{padding:0 10px; }
+.indexList > li > label{display:inline-block; width:60px; height:41px; vertical-align:middle; font-size:0; }
+.indexList > li:nth-child(1) > label{background:url(../images/index/loginIcon04.png) 10% 45% no-repeat;}
+.indexList > li:nth-child(2) > label{background:url(../images/index/loginIcon01.png) 10% 50% no-repeat;}
+.indexList > li:nth-child(3) > label{background:url(../images/index/loginIcon02.png) 10% 50% no-repeat;}
+.indexList > li:nth-child(4) > label{background:url(../images/index/loginIcon05.png) 10% 50% no-repeat;}
+.indexList > li:nth-child(5) > label{background:url(../images/index/loginIcon03.png) 10% 50% no-repeat;}
+.indexList > li > label.password{background:url(../images/index/loginIcon02.png) 10% 50% no-repeat;}
+.indexList input[type='text'], .indexList input[type='password']{ font-size:12px; width:400px; height:37px; background:#fff; border:1px solid #111; padding:5px; box-sizing:border-box;  margin:10px 0; vertical-align:middle;}
+.indexBtnGrp{padding-left:75px; padding-top:10px;}
+.indexBtnGrp1{padding-top:10px; text-align:center; }
+.indexBtnGrp a, .indexBtnGrp input[type='submit']{ font-family:verdana; color:#fff; font-size:16px; font-weight:bold; display:inline-block; width:198px; height:45px; line-height:45px;   box-sizing:border-box; border:1px solid #222; text-align:center; text-shadow:1px 1px 1px #111;}
+.indexBtnGrp1 a{ font-family:verdana; color:#fff; font-size:16px; font-weight:bold; display:inline-block; width:257px; height:45px; line-height:45px;  box-sizing:border-box; border:1px solid #222; text-align:center; text-shadow:1px 1px 1px #111;}
+.indexBtnGrp a.confirm, .indexBtnGrp1 a.confirm, .indexBtnGrp input[type='submit']{background:#0099ff;}
+.indexBtnGrp a.cancel, .indexBtnGrp1 a.cancel{background:#777;}
+
+li.textLink{padding-left:70px; color:#ddd; overflow:hidden; }
+li.textLink .left{float:left; margin-top:5px;}
+li.textLink .right{margin-left:257px; }
+li.textLink input[type='checkbox']{margin:0; padding:0;}
+li.textLink a{color:#ddd; }
+a.idpwBtn{display:inline-block; padding:5px 10px; background:#222; border:1px solid #000; }
+label.idSave:not(label){padding:0; margin:0; height:20px; display:inline-block; padding:10px 0; background:none;}
+.indexTblBox{height:200px; background:#869eb8; box-sizing:border-box; border:1px solid #222; overflow-x:hidden; overflow-y:scroll; }
+.inviteContent{padding:10px 15px;}
+.indexTblTitle{height:25px; color:#fff; }
+.indexTbl td{color:#fff; border-bottom:1px solid #a5bbd3; height:25px; padding:3px; text-align:center;}
+.rtcExp{}
+.dim{width:100%; height:100%; position:absolute; left:0; top:0; background:#000; opacity:0.8; display:none;}
+.error{font:normal 11px dotum; color:#ff6701; letter-spacing:-1px;}
